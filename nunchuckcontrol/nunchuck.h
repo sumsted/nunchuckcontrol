@@ -1,6 +1,7 @@
 #ifndef NUNCHUCK_H
 #define NUNCHUCK_H
 
+#include <Arduino.h>
 #include <Wire.h>
 
 typedef struct {
@@ -10,7 +11,12 @@ typedef struct {
     uint8_t yAccelRaw;
     uint8_t zAccelRaw;
     uint8_t buttonsRaw;
-} NunchuckDataType;
+} NunchuckRawDataType;
+
+union NunchuckRawDataUnion{
+    NunchuckRawDataType data;
+    unsigned char buffer[6];
+};
 
 typedef struct {
     uint8_t xPosition;
@@ -30,14 +36,16 @@ class Nunchuck {
         Nunchuck();
         NunchuckJoystickType *getJoystick();
         NunchuckAccelType *getAccel();
-        void read();
-        void printData();
+        int read();
+        void print();
+        void chart();
     private:
-        NunchuckDataType data;
+        NunchuckRawDataUnion raw;
         NunchuckJoystickType joystick;
         NunchuckAccelType accel;
+        char decodeByte(char x);
         void sendCommand();
         void transform();
-}
+};
 
-#endif NUNCHUCK_H
+#endif

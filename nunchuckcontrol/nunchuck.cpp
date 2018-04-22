@@ -84,7 +84,7 @@ void Nunchuck::chart(){
 //    Serial.print(raw.data.buttonsRaw);Serial.print("\n");
 
     Serial.print(joystick.xPosition); Serial.print("\t");
-    Serial.print(joystick.yPosition); Serial.print("\n");
+    Serial.print(joystick.yPosition); Serial.print("\t");
 
 //    Serial.print(joystick.zButton); Serial.print("\t");
 //    Serial.print(joystick.cButton); Serial.print("\n");

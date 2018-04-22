@@ -33,6 +33,9 @@ typedef struct {
 
 class Nunchuck {
     public:
+        NunchuckRawDataUnion raw;
+        NunchuckJoystickType joystick;
+        NunchuckAccelType accel;
         Nunchuck();
         NunchuckJoystickType *getJoystick();
         NunchuckAccelType *getAccel();
@@ -40,9 +43,6 @@ class Nunchuck {
         void print();
         void chart();
     private:
-        NunchuckRawDataUnion raw;
-        NunchuckJoystickType joystick;
-        NunchuckAccelType accel;
         char decodeByte(char x);
         void sendCommand();
         void transform();

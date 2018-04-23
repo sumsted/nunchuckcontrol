@@ -1,6 +1,16 @@
 #include "nunchuck.h"
+#include "requests.h"
+
+
+#define ROBOT_WIFI_SSID "rovernet"
+#define ROBOT_WIFI_PASSWORD "Raspberry"
+#define ROBOT_PROTOCOL "http"
+#define ROBOT_PORT 8080
+#define ROBOT_HOST "192.168.42.1"
+#define ROBOT_PATH "robot"
 
 Nunchuck *nunchuck;
+Requests *requests;
 
 uint8_t xRange[3] = {35, 130, 225};
 uint8_t yRange[3] = {26, 124, 220};
@@ -8,6 +18,9 @@ uint8_t yRange[3] = {26, 124, 220};
 #define HIGH_JOYSTICK_RANGE  2
 #define CENTER_JOYSTICK_RANGE  1
 #define LOW_JOYSTICK_RANGE  0
+
+const char *payloadPattern = "{\"left\":%d,\"right\":%d}";
+char payload[256];
 long left = 0;
 long right = 0;
 
@@ -17,6 +30,8 @@ void setup()
     Serial.begin(19200);
     nunchuck = new Nunchuck();
     centerJoystick();
+    ConfigurationUnion *pcu = defaultConfig();
+    requests = new Requests(pcu);
 }
 
 void loop()
@@ -24,8 +39,12 @@ void loop()
     nunchuck->read();
     transform();
     Serial.print(left); Serial.print("\t");
-    Serial.print(right); Serial.print("\n");
-    delay(20);
+    Serial.print(right); Serial.print("\t");
+    Serial.print(nunchuck->joystick.cButton*10); Serial.print("\t");
+    Serial.print(nunchuck->joystick.zButton*10); Serial.print("\n");
+    sprintf(payload, payloadPattern, left, right);
+    requests->sendUDP(payload);
+    delay(250);
 }
 
 void centerJoystick(){
@@ -54,3 +73,24 @@ void transform(){
     right= (abs(right) > 100) ? ((right/abs(right))*100) : right;
 }
 
+ConfigurationUnion *defaultConfig(){
+    ConfigurationUnion *cu = new ConfigurationUnion;
+    memset(cu, '\0', sizeof(cu));
+    strcpy(cu->configuration.serial, "RB001");
+    strcpy(cu->configuration.deviceId, "ROBOT01");
+    strcpy(cu->configuration.model, "ESP32");
+    strcpy(cu->configuration.firmware, "1.0");
+    strcpy(cu->configuration.wifiSsid, ROBOT_WIFI_SSID);
+    strcpy(cu->configuration.wifiPassword, ROBOT_WIFI_PASSWORD);
+    strcpy(cu->configuration.location, "Home");
+    strcpy(cu->configuration.gatewayProtocol,ROBOT_PROTOCOL);
+    strcpy(cu->configuration.gatewayHost,ROBOT_HOST);
+    cu->configuration.gatewayPort = ROBOT_PORT;
+    strcpy(cu->configuration.gatewayPath,ROBOT_PATH);
+    strcpy(cu->configuration.gatewayDeviceKey, "");
+    strcpy(cu->configuration.state[1],"1");
+    strcpy(cu->configuration.state[2],"2");
+    strcpy(cu->configuration.state[3],"3");
+    Serial.println("default config initialized");
+    return cu;
+}

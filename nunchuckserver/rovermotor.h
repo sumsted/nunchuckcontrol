@@ -2,7 +2,7 @@
 #define ROVERMOTOR_H
 
 #include <Arduino.h>
-#include <Servo.h>
+//#include <Servo.h>
 
 #define PWM_PIN_LF 5
 #define DIR_PIN_LF 10
@@ -22,7 +22,7 @@
 #define MOTOR_SMOOTHING_ITERATIONS 10
 #define MOTOR_SMOOTHING_WAIT 35 // ms
 
-class RoverMotor(){
+class RoverMotor{
     public:
         RoverMotor();
         void testPwm();
@@ -30,6 +30,8 @@ class RoverMotor(){
     private:
         int lastLeftPulse;
         int lastRightPulse;
-}
+        void analogSetup(int pin, int channel);
+        void analogWrite(int channel, int pulse);
+};
 
-##endif
+#endif

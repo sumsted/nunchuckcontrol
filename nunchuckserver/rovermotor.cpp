@@ -1,6 +1,4 @@
-#include <Arduino.h>
-#include <Servo.h>
-
+#include "rovermotor.h"
 
 RoverMotor::RoverMotor(){
     lastLeftPulse = PWM_STOP;
@@ -9,8 +7,6 @@ RoverMotor::RoverMotor(){
     pinMode(PWM_PIN_LF, OUTPUT);
     pinMode(DIR_PIN_RF, OUTPUT);
     pinMode(PWM_PIN_RF, OUTPUT);
-    pinMode(US_FRONT_TRIG_PIN, OUTPUT);
-    pinMode(US_FRONT_ECHO_PIN, INPUT);
 
     digitalWrite(PWM_PIN_LF, HIGH);
     digitalWrite(PWM_PIN_RF, HIGH);
@@ -21,7 +17,7 @@ RoverMotor::RoverMotor(){
 }
 
 void RoverMotor::analogSetup(int pin, int channel){
-    ledcSetup(channel, PWM_FREQUENCT, PWM_TIMER_13_BIT);
+    ledcSetup(channel, PWM_FREQUENCY, PWM_TIMER_13_BIT);
     ledcAttachPin(pin, channel);
     analogWrite(channel, PWM_STOP);
 }
@@ -30,7 +26,7 @@ void RoverMotor::analogWrite(int channel, int pulse){
     ledcWrite(channel, pulse);
 }
 
-int RoverMotor::runMotor(int leftSpeed, int rightSpeed1){
+int RoverMotor::runMotor(int leftSpeed, int rightSpeed){
     int leftPulse = PWM_STOP;
     int rightPulse = PWM_STOP;
     int i;
@@ -63,7 +59,6 @@ int RoverMotor::runMotor(int leftSpeed, int rightSpeed1){
         }
         analogWrite(DIR_PIN_LF, leftPulse);
         analogWrite(DIR_PIN_RF, rightPulse);
-        commandProcessed = true;
     }
 
     lastLeftPulse = leftPulse;

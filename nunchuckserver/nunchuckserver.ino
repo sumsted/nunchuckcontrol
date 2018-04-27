@@ -39,21 +39,21 @@ int wifiHandler(long *left, long *right){
 void setup(){
     Serial.begin(115200);
     roverMotor = new RoverMotor();
-    server = new WiFiServer(80);
 
-    WiFi.disconnect(true);
-    delay(1000);
-
-    WiFi.softAP(WIFI_SSID, WIFI_PASS);
-    Serial.println(WiFi.softAPIP());
-    server->begin();
-    Serial.println("Server started");
+//    server = new WiFiServer(80);
+//    WiFi.disconnect(true);
+//    delay(1000);
+//    WiFi.softAP(WIFI_SSID, WIFI_PASS);
+//    Serial.println(WiFi.softAPIP());
+//    server->begin();
+//    Serial.println("Server started");
 }
 
 void loop(){
-    long left = 0;
-    long right = 0;
-    if(!wifiHandler(&left, &right)){
-        roverMotor->runMotor(left, right);
-    }
+//    long left = 0;
+//    long right = 0;
+//    if(!wifiHandler(&left, &right)){
+//        roverMotor->runMotor(left, right);
+//    }
+    roverMotor->testLR();
 }

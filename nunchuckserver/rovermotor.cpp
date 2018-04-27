@@ -12,12 +12,12 @@ RoverMotor::RoverMotor(){
     digitalWrite(PWM_PIN_RF, HIGH);
     analogSetup(DIR_PIN_LF, PWM_LEFT_CHANNEL);
     analogSetup(DIR_PIN_RF, PWM_RIGHT_CHANNEL);
-    analogWrite(DIR_PIN_LF, PWM_STOP);
-    analogWrite(DIR_PIN_RF, PWM_STOP);
+    analogWrite(PWM_LEFT_CHANNEL, PWM_STOP);
+    analogWrite(PWM_RIGHT_CHANNEL, PWM_STOP);
 }
 
 void RoverMotor::analogSetup(int pin, int channel){
-    ledcSetup(channel, PWM_FREQUENCY, PWM_TIMER_13_BIT);
+    ledcSetup(channel, PWM_FREQUENCY, PWM_TIMER_BITS);
     ledcAttachPin(pin, channel);
     analogWrite(channel, PWM_STOP);
 }
@@ -40,8 +40,8 @@ int RoverMotor::runMotor(int leftSpeed, int rightSpeed){
     digitalWrite(PWM_PIN_RF, HIGH);
 
     if(leftSpeed > 100 || leftSpeed < -100 || rightSpeed > 100 || rightSpeed < -100){
-        analogWrite(DIR_PIN_LF, lastLeftPulse);
-        analogWrite(DIR_PIN_RF, lastRightPulse);
+        analogWrite(PWM_LEFT_CHANNEL, lastLeftPulse);
+        analogWrite(PWM_RIGHT_CHANNEL, lastRightPulse);
     } else {
         leftPulse = PWM_STOP + (PWM_DELTA * (leftSpeed * PWM_TUNE_PERCENTAGE)/100 * MOTOR_ORIENTATION_LEFT);
         rightPulse = PWM_STOP + (PWM_DELTA * (rightSpeed * PWM_TUNE_PERCENTAGE)/100 * MOTOR_ORIENTATION_RIGHT);
@@ -50,15 +50,20 @@ int RoverMotor::runMotor(int leftSpeed, int rightSpeed){
         for(i=0;i<MOTOR_SMOOTHING_ITERATIONS;i++){
             unsigned long l = lastLeftPulse+(deltaLeftPulse*i);
             unsigned long r = lastRightPulse+(deltaRightPulse*i);
-            analogWrite(DIR_PIN_LF, l);
-            analogWrite(DIR_PIN_RF, r);
-//            Serial.print(l);
-//            Serial.print(", ");
-//            Serial.println(r);
+            analogWrite(PWM_LEFT_CHANNEL, l);
+            analogWrite(PWM_RIGHT_CHANNEL, r);
+            Serial.print(leftSpeed*10);Serial.print("\t");
+            Serial.print(rightSpeed*10);Serial.print("\t");
+            Serial.print(l);Serial.print("\t");
+            Serial.println(r);
             delay(MOTOR_SMOOTHING_WAIT);
         }
-        analogWrite(DIR_PIN_LF, leftPulse);
-        analogWrite(DIR_PIN_RF, rightPulse);
+        analogWrite(PWM_LEFT_CHANNEL, leftPulse);
+        analogWrite(PWM_RIGHT_CHANNEL, rightPulse);
+        Serial.print(leftSpeed*10);Serial.print("\t");
+        Serial.print(rightSpeed*10);Serial.print("\t");
+        Serial.print(leftPulse);Serial.print("\t");
+        Serial.println(rightPulse);
     }
 
     lastLeftPulse = leftPulse;
@@ -73,15 +78,30 @@ void RoverMotor::testPwm(){
     digitalWrite(PWM_PIN_LF, HIGH);
     digitalWrite(PWM_PIN_RF, HIGH);
     for(pulse=0;pulse<=255;pulse++){
-        analogWrite(DIR_PIN_LF, pulse);
-        analogWrite(DIR_PIN_RF, pulse);
+        analogWrite(PWM_LEFT_CHANNEL, pulse);
+        analogWrite(PWM_RIGHT_CHANNEL, pulse);
         delay(50);
-        Serial.println(pulse);        
-    }    
+        Serial.println(pulse);
+    }
     for(pulse=255;pulse>=0;pulse--){
-        analogWrite(DIR_PIN_LF, pulse);
-        analogWrite(DIR_PIN_RF, pulse);
+        analogWrite(PWM_LEFT_CHANNEL, pulse);
+        analogWrite(PWM_RIGHT_CHANNEL, pulse);
         delay(50);
-        Serial.println(pulse);        
-    }    
+        Serial.println(pulse);
+    }
+}
+
+void RoverMotor::testLR(){
+    int i = 0;
+    for(i = -100;i < 101;i++){
+        runMotor(i, i);
+    }
+    for(i = 100;i > -101;i--){
+        runMotor(i, i);
+    }
+}
+
+void RoverMotor::testZero(){
+    int i = 0;
+    runMotor(i, i);
 }

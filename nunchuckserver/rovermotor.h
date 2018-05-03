@@ -4,10 +4,14 @@
 #include <Arduino.h>
 //#include <Servo.h>
 
-#define PWM_PIN_LF 18
-#define DIR_PIN_LF 23
-#define PWM_PIN_RF 19
-#define DIR_PIN_RF 22
+//#define PWM_PIN_LF 18
+//#define DIR_PIN_LF 23
+//#define PWM_PIN_RF 19
+//#define DIR_PIN_RF 22
+#define PWM_PIN_LF 2
+#define DIR_PIN_LF 17
+#define PWM_PIN_RF 1
+#define DIR_PIN_RF 0
 #define PWM_LEFT_CHANNEL 0
 #define PWM_RIGHT_CHANNEL 1
 #define PWM_FREQUENCY 5000

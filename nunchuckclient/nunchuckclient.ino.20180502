@@ -1,5 +1,4 @@
 #include <WiFi.h>
-#include <WiFiUDP.h>
 #include "nunchuck.h"
 
 #define WIFI_SSID "roveresp"
@@ -15,14 +14,7 @@ Nunchuck *nunchuck;
 uint8_t xRange[3] = {35, 130, 225};
 uint8_t yRange[3] = {26, 124, 220};
 const char *payloadPattern = "%04d%04d";
-WiFiUDP udp;
 
-/*
- * Todo:
- * 1. establish wifi connection with event handlers to try to reconnect
- * 2. send udp packet
- * 3. add wifi event handler
- */
 void setup(){
     Serial.begin(115200);
 
@@ -44,49 +36,26 @@ void loop(){
     Serial.print(left); Serial.print("\t");
     Serial.println(right);
     sprintf(payload, payloadPattern, left, right);
-    sendPacket(payload);
+    sendPayload(payload);
 //    delay(250);
 }
 
 void wifiSetup(){
     WiFi.disconnect(true);
     delay(1000);
-    WiFi.onEvent(wifiEventHandler);
     WiFi.begin(WIFI_SSID, WIFI_SSID);
     while (WiFi.status() != WL_CONNECTED){
-        delay(500);
-        Serial.print(".");
+    delay(500);
+    Serial.print(".");
     }
 
     Serial.println("WiFi Connected");
-    udp.begin(WiFi.localIP(), SERVER_PORT);
-    Serial.print("Bind to UDP Port");
     delay(10);
     Serial.print("Local IP: ");
     Serial.println(WiFi.localIP());
     Serial.print("Gateway: ");
     Serial.println(WiFi.gatewayIP());
 
-}
-
-void wifiEventHandler(WiFiEvent_t event){
-    switch(event){
-        case SYSTEM_EVENT_STA_GOT_IP:
-            Serial.print("SYSTEM_EVENT_STA_GOT_IP");
-            break;
-        case SYSTEM_EVENT_STA_DISCONNECTED:
-            Serial.print("SYSTEM_EVENT_STA_DISCONNECTED");
-            wifiSetup();
-            break;
-        default:
-            break;
-    }
-}
-
-void sendPacket(char *payload){
-    udp.beginPacket(SERVER_IP, SERVER_PORT);
-    udp.printf(payload);
-    udp.endPacket();
 }
 
 void sendPayload(char *payload){

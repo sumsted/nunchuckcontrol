@@ -2,11 +2,11 @@
 #include "requests.h"
 
 
-#define ROBOT_WIFI_SSID "rovernet"
-#define ROBOT_WIFI_PASSWORD "Raspberry"
+#define ROBOT_WIFI_SSID "XXX"
+#define ROBOT_WIFI_PASSWORD "XXX"
 #define ROBOT_PROTOCOL "http"
-#define ROBOT_PORT 8080
-#define ROBOT_HOST "192.168.42.1"
+#define ROBOT_PORT 2807
+#define ROBOT_HOST "192.168.4.1"
 #define ROBOT_PATH "robot"
 
 Nunchuck *nunchuck;

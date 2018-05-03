@@ -1,5 +1,4 @@
 #include <WiFi.h>
-#include <WiFiUdp.h>
 #include "rovermotor.h"
 
 #define WIFI_SSID "roveresp"
@@ -7,32 +6,25 @@
 #define SERVER_PORT 80
 
 //RoverMotor *roverMotor;
-WiFiUDP udp;
-
-/*
- * todo:
- * 1. establish wifi access point
- * 2. bind to port for udp
- * 3. loop looking for packet
- * 4. process packet
- */
+WiFiServer *server;
 
 void setup(){
     Serial.begin(115200);
 //    roverMotor = new RoverMotor();
 
+    server = new WiFiServer(SERVER_PORT);
     WiFi.disconnect(true);
     delay(1000);
     WiFi.softAP(WIFI_SSID, NULL);
     Serial.println(WiFi.softAPIP());
-    udp.begin(SERVER_PORT); //bind to port
-    Serial.println("Listening for UDP packets");
+    server->begin();
+    Serial.println("Server started");
 }
 
 void loop(){
     long left = 0;
     long right = 0;
-    if(udpPacketHandler(&left, &right)){
+    if(!wifiHandler(&left, &right)){
         Serial.print(left); Serial.print("\t");
         Serial.println(right);
 //        roverMotor->runMotor(left, right);
@@ -40,20 +32,30 @@ void loop(){
 //    roverMotor->testLR();
 }
 
-boolean udpPacketHandler(long *left, long *right){
-    char buffer[50];
-    if(udp.parsePacket()){
-        if(udp.read(buffer, sizeof(buffer))){
-            parsePayload(buffer, left, right);
-            return true;
-        }
-    }
-    return false;
-}
-
 void parsePayload(String  payload, long *left, long *right){
     if(payload.length()==8){
         *left = payload.substring(0, 4).toInt();
         *right = payload.substring(4, 8).toInt();
     }
+}
+
+int wifiHandler(long *left, long *right){
+    WiFiClient client = server->available();
+    if(!client){
+        Serial.println("No client");
+        delay(100);
+        return -1;
+    }
+
+    Serial.println("Waiting for data");
+    while(!client.available()){
+        delay(1);
+    }
+
+    String payload = client.readStringUntil('\r');
+    Serial.println("Data read");
+    Serial.println(payload);
+    client.flush();
+    parsePayload(payload, left, right);
+    return 0;
 }

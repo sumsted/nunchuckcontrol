@@ -45,7 +45,7 @@ void loop(){
     Serial.println(right);
     sprintf(payload, payloadPattern, left, right);
     sendPacket(payload);
-//    delay(250);
+    delay(100);
 }
 
 void wifiSetup(){

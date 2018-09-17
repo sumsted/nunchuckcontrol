@@ -17,7 +17,7 @@
 #define PWM_FREQUENCY 5000
 #define PWM_TIMER_BITS 8
 #define MOTOR_ORIENTATION_LEFT -1
-#define MOTOR_ORIENTATION_RIGHT -1
+#define MOTOR_ORIENTATION_RIGHT 1
 #define PWM_FULL_FORWARD 0
 #define PWM_STOP 127
 #define PWM_FULL_BACKWARD 255
@@ -26,6 +26,7 @@
 #define MOTOR_SMOOTHING_ITERATIONS 4
 #define MOTOR_SMOOTHING_WAIT 10 // ms
 
+// todo make for single motor
 class RoverMotor{
     public:
         RoverMotor();

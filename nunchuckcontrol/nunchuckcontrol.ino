@@ -2,11 +2,17 @@
 #include "requests.h"
 
 
-#define ROBOT_WIFI_SSID "XXX"
-#define ROBOT_WIFI_PASSWORD "XXX"
+// #define ROBOT_WIFI_SSID "XXX"
+// #define ROBOT_WIFI_PASSWORD "XXX"
+// #define ROBOT_PROTOCOL "http"
+// #define ROBOT_PORT 2807
+// #define ROBOT_HOST "192.168.4.1"
+// #define ROBOT_PATH "robot"
+#define ROBOT_WIFI_SSID "ubiquityrobot7F3D"
+#define ROBOT_WIFI_PASSWORD "robot"
 #define ROBOT_PROTOCOL "http"
-#define ROBOT_PORT 2807
-#define ROBOT_HOST "192.168.4.1"
+#define ROBOT_PORT 8484
+#define ROBOT_HOST "10.42.0.1"
 #define ROBOT_PATH "robot"
 
 Nunchuck *nunchuck;

@@ -2,6 +2,11 @@
 #include <WiFiUDP.h>
 #include "nunchuck.h"
 
+// #define WIFI_SSID "robot"
+// #define WIFI_PASS "robot"
+// #define SERVER_PORT 8484
+// #define SERVER_IP "10.42.0.1"
+
 #define WIFI_SSID "roveresp"
 #define WIFI_PASS "roverpass"
 #define SERVER_IP "192.168.4.1"
